@@ -29,7 +29,10 @@ public class GameScreen implements Screen {
     Array<Rectangle> raindrops;
     long lastDropTime;
     int dropsGathered;
-    int lives = 5;
+    private int lives = 5;
+    private int speed = 300;
+    private int level = 0;
+    private long time = 1000000000;
 
     public GameScreen(final Drop game) {
         this.game = game;
@@ -72,12 +75,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
+        ScreenUtils.clear(0, 0.3f, 0.2f, 1);
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.font.draw(game.batch, "Krople zebrane: " + dropsGathered, 0, 480);
-        game.font.draw(game.batch, "Zycia: " + lives, 0, 470);
+        game.font.draw(game.batch, "Krople zebrane: " + dropsGathered + " / 20", 0, 480);
+        game.font.draw(game.batch, "Poiom: " + level, 0, 455);
+        game.font.draw(game.batch, "Zycia: " + lives, 0, 430);
         game.batch.draw(bucketImage, bucket.x, bucket.y, bucket.width, bucket.height);
         for (Rectangle raindrop : raindrops) {
             game.batch.draw(dropImage, raindrop.x, raindrop.y);
@@ -91,22 +95,22 @@ public class GameScreen implements Screen {
             bucket.x = touchPos.x - 64 / 2;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A))
-            bucket.x -= 400 * Gdx.graphics.getDeltaTime();
+            bucket.x -= 500 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Input.Keys.D))
-            bucket.x += 400 * Gdx.graphics.getDeltaTime();
+            bucket.x += 500 * Gdx.graphics.getDeltaTime();
 
         if (bucket.x < 0)
             bucket.x = 0;
         if (bucket.x > 800 - 64)
             bucket.x = 800 - 64;
 
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000)
+        if (TimeUtils.nanoTime() - lastDropTime > time)
             spawnRaindrop();
 
         Iterator<Rectangle> iter = raindrops.iterator();
         while (iter.hasNext()) {
             Rectangle raindrop = iter.next();
-            raindrop.y -= 300 * Gdx.graphics.getDeltaTime();
+            raindrop.y -= speed * Gdx.graphics.getDeltaTime();
             if (raindrop.y + 64 < 0) {
                 lives--;
                 iter.remove();
@@ -120,6 +124,17 @@ public class GameScreen implements Screen {
 
         if (lives == 0) {
             game.createLost();
+        }
+
+        if (level == 2) {
+            game.createWin();
+        }
+
+        if (dropsGathered == 5 && lives > 0) {
+            speed += 100;
+            time -= 100000000;
+            dropsGathered = 0;
+            level++;
         }
 
     }

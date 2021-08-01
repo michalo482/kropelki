@@ -22,7 +22,13 @@ public class Drop extends Game {
 	public void createLost() {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		this.setScreen(new LostMenuScreen(this));
+		this.setScreen(new LostScreen(this));
+	}
+
+	public void createWin() {
+		batch = new SpriteBatch();
+		font = new BitmapFont();
+		this.setScreen(new WinScreen(this));
 	}
 
 

@@ -1,23 +1,22 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainMenuScreen implements Screen {
+public class WinScreen implements Screen {
 
     final Drop game;
 
     OrthographicCamera camera;
 
-    public MainMenuScreen(final Drop game) {
+    public WinScreen(final Drop game) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
     }
-
-
     @Override
     public void show() {
 
@@ -31,11 +30,11 @@ public class MainMenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
-        game.font.draw(game.batch, "Witaj w kropelce!", 100, 150);
-        game.font.draw(game.batch, "Kliknij gdziekolwiek, zeby zaczac", 100, 100);
+        game.font.draw(game.batch, "Wygrales!", 100, 150);
+        game.font.draw(game.batch, "Wcisnij spacje, zeby zagrac jeszcze raz", 100, 100);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             game.setScreen(new Countdown(game));
             dispose();
         }

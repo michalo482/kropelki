@@ -1,22 +1,22 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class LostMenuScreen implements Screen {
+public class Countdown implements Screen {
 
     final Drop game;
 
     OrthographicCamera camera;
 
-    public LostMenuScreen(final Drop game) {
+    private int count = 300;
+
+    public Countdown(final Drop game) {
         this.game = game;
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
     }
-
     @Override
     public void show() {
 
@@ -28,17 +28,19 @@ public class LostMenuScreen implements Screen {
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
-        game.batch.begin();
-        game.font.draw(game.batch, "Przegrales!", 100, 150);
-        game.font.draw(game.batch, "Kliknij gdziekolwiek, zeby zaczac", 100, 100);
-        game.batch.end();
-
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new GameScreen(game));
-            dispose();
+        if(count != -1){
+            if(count == 0 ){
+                game.setScreen(new GameScreen(game));
+                dispose();
+            }
+            count--;
+            game.batch.begin();
+            game.font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            if(count>=200&&count<=300)game.font.draw(game.batch, "3", 800/2, 480/2);
+            if(count>=100&&count<=200)game.font.draw(game.batch, "2", 800/2, 480/2);
+            if(count>=0&&count<=100)game.font.draw(game.batch, "1", 800/2, 480/2);
+            game.batch.end();
         }
-
     }
 
     @Override
